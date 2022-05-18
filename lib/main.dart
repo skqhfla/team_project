@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:team_project/profiledetail.dart';
-import 'package:team_project/profilelist.dart';
-import 'package:team_project/updateprofile.dart';
+import 'profiledetail.dart';
+import 'profilelist.dart';
+import 'updateprofile.dart';
 import 'app.dart';
 import 'login.dart';
 import 'mainpage.dart';
