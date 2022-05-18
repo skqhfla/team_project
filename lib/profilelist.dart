@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 
 import 'addprofile.dart';
 import 'model/animal.dart';
-import 'model/animallist.dart';
+import 'model/animal_List.dart';
 
 class ProfileList extends StatefulWidget {
   const ProfileList({Key? key}) : super(key: key);
@@ -38,7 +38,7 @@ class _ProfileListState extends State<ProfileList> {
   }
 
   List<Expanded> _buildListCards(BuildContext context) {
-    List<Animal> animals = AnimalList.loadAnimals(Category.all);
+    List<Animal> animals = AnimalRepository.loadAnimals(Category.all);
 
     if (animals.isEmpty) {
       return const <Expanded>[];
@@ -113,7 +113,7 @@ class _ProfileListState extends State<ProfileList> {
                             ),
                           ),
                           Text(
-                            animal.Desc,
+                            animal.desc,
                             style: const TextStyle(
                               fontSize: 10,
                               color: Colors.black,

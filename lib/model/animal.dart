@@ -1,4 +1,4 @@
-enum Category { all, cat, dog}
+enum Category { all, dog, cat}
 
 class Animal {
   const Animal({
@@ -7,10 +7,11 @@ class Animal {
     required this.name,
     required this.age,
     required this.sex,
+    required this.weight,
+    required this.live,
+    required this.desc,
     required this.like,
     required this.eat,
-    required this.live,
-    required this.Desc,
   });
 
   final Category category;
@@ -18,8 +19,15 @@ class Animal {
   final String name;
   final int age;
   final String sex;
+  final int weight;
+  final String live;
+  final String desc;
   final int like;
   final int eat;
-  final String live;
-  final String Desc;
+
+// String get assetName => '$id-0.jpg';
+// String get assetPackage => 'shrine_images';
+
+// @override
+// String toString() => "$name (id=$id)";
 }
