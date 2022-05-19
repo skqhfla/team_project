@@ -10,7 +10,6 @@ import 'mainpage.dart';
 import 'package:provider/provider.dart';
 
 
-//Eunjin
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp();
@@ -20,7 +19,6 @@ Future<void> main() async {
       builder: (context, _) => const MyApp(),
     ),
   );
-}
 
 class MyApp extends StatelessWidget {
   const MyApp({Key? key}) : super(key: key);
