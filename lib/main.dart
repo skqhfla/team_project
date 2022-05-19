@@ -7,7 +7,7 @@ import 'login.dart';
 import 'mainpage.dart';
 
 
-//Eunjin
+//Eunjin2
 void main() {
   runApp(const MyApp());
 }
