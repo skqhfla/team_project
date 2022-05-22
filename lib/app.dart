@@ -33,8 +33,8 @@ class _ShrineAppState extends State<ShrineApp> {
               initialRoute: '/main',
               routes: {
                 '/main': (BuildContext context) => MyHomePage(
-                      title: 'hello',
-                    ),
+                  title: 'hello',
+                ),
                 '/login': (BuildContext context) => LoginPage(),
               },
             );

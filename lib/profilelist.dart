@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:team_project/profiledetail.dart';
 
 import 'addprofile.dart';
 import 'model/animal.dart';
@@ -45,13 +46,14 @@ class _ProfileListState extends State<ProfileList> {
               children: [
                 Expanded(
                   child: GridView.count(
-                    crossAxisCount: 2,
-                    padding: const EdgeInsets.all(16.0),
-                    childAspectRatio: 8.0 / 9.0,
+                    crossAxisCount: 1,
+                    padding: const EdgeInsets.all(10.0),
+                    childAspectRatio: 8.0 / 5.0,
                     children:
-                    snapshot.data!.docs.map((DocumentSnapshot document) {
+                        snapshot.data!.docs.map((DocumentSnapshot document) {
                       return Animal(
-                        image: document.id,
+                        id: document.id,
+                        image: document['image'].toString(),
                         name: document['name'].toString(),
                         age: document['age'].toString(),
                         sex: document['sex'].toString(),
@@ -77,6 +79,7 @@ class _ProfileListState extends State<ProfileList> {
 
 class Animal extends StatelessWidget {
   const Animal({
+    required this.id,
     required this.image,
     required this.name,
     required this.age,
@@ -88,6 +91,7 @@ class Animal extends StatelessWidget {
     required this.eat,
   });
 
+  final id;
   final image;
   final name;
   final age;
@@ -107,116 +111,137 @@ class Animal extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: <Widget>[
           AspectRatio(
-            aspectRatio: 18 / 11,
-            child: FutureBuilder(
-                future: storage.downloadURL(image),
-                builder:
-                    (BuildContext context, AsyncSnapshot<String> snapshot) {
-                  if (snapshot.connectionState == ConnectionState.done &&
-                      snapshot.hasData) {
-                    return Container(
-                        child: Image.network(
-                          snapshot.data!,
-                          fit: BoxFit.fill,
-                        ));
-                  }
-                  if (snapshot.connectionState == ConnectionState.waiting ||
-                      !snapshot.hasData) {
-                    return CircularProgressIndicator();
-                  }
-
-                  return Container();
-                }),
-          ),
-          Expanded(
-            child: Padding(
-              padding: const EdgeInsets.all(3),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                mainAxisSize: MainAxisSize.min,
+              aspectRatio: 18 / 11,
+              child: Row(
                 children: [
-                  ConstrainedBox(
-                    constraints: const BoxConstraints(
-                      maxWidth: 50,
-                    ),
-                    child: Column(
-                      children: [
-                        Row(
-                          children: [
-                            Text(
-                              name,
-                              style: const TextStyle(
-                                fontSize: 20,
-                                color: Colors.black,
-                                fontWeight: FontWeight.bold,
-                              ),
-                              maxLines: 1,
+                  FutureBuilder(
+                      future: storage.downloadURL(image),
+                      builder: (BuildContext context,
+                          AsyncSnapshot<String> snapshot) {
+                        if (snapshot.connectionState == ConnectionState.done &&
+                            snapshot.hasData) {
+                          return Container(
+                            child: Image.network(
+                              snapshot.data!,
+                              fit: BoxFit.fill,
                             ),
-                            Text(
-                              " / " +
-                                  age +
-                                  "살 " +
-                                  sex,
-                              style: const TextStyle(
-                                fontSize: 10,
-                                color: Colors.black,
-                              ),
+                          );
+                        }
+                        if (!snapshot.hasData) {
+                          return CircularProgressIndicator();
+                        }
+                        return Container();
+                      }),
+                  Expanded(
+                    child: Padding(
+                      padding: const EdgeInsets.all(3),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          ConstrainedBox(
+                            constraints: const BoxConstraints(
+                              maxWidth: 150,
                             ),
-                          ],
-                        ),
-                        Text(
-                          live,
-                          style: const TextStyle(
-                            fontSize: 10,
-                            color: Colors.black,
-                          ),
-                        ),
-                        Text(
-                          desc,
-                          style: const TextStyle(
-                            fontSize: 10,
-                            color: Colors.black,
-                          ),
-                        ),
-                        Row(
-                          children: [
-                            IconButton(
-                                icon: Icon(
-                                  Icons.favorite,
-                                  color: Colors.pink,
-                                  size: 15,
+                            child: Column(
+                              children: [
+                                Row(
+                                  children: [
+                                    Text(
+                                      name,
+                                      style: const TextStyle(
+                                        fontSize: 25,
+                                        color: Colors.black,
+                                        fontWeight: FontWeight.bold,
+                                      ),
+                                      maxLines: 1,
+                                    ),
+                                    Text(
+                                      " / " + age + "살 " + sex,
+                                      style: const TextStyle(
+                                        fontSize: 15,
+                                        color: Colors.black,
+                                      ),
+                                    ),
+                                  ],
                                 ),
-                                onPressed: () {}),
-                            Text(
-                              like,
-                              style: const TextStyle(
-                                fontSize: 15,
-                                color: Colors.pink,
-                              ),
-                            ),
-                            IconButton(
-                                icon: Icon(
-                                  Icons.restaurant_rounded,
-                                  color: Colors.green,
-                                  size: 15,
+                                Text(
+                                  live,
+                                  style: const TextStyle(
+                                    fontSize: 13,
+                                    color: Colors.black,
+                                  ),
                                 ),
-                                onPressed: () {}),
-                            Text(
-                              eat,
-                              style: const TextStyle(
-                                fontSize: 15,
-                                color: Colors.green,
-                              ),
+                                Text(
+                                  desc,
+                                  style: const TextStyle(
+                                    fontSize: 13,
+                                    color: Colors.black,
+                                  ),
+                                ),
+                                Row(
+                                  children: [
+                                    IconButton(
+                                        icon: Icon(
+                                          Icons.favorite,
+                                          color: Colors.pink,
+                                          size: 17,
+                                        ),
+                                        onPressed: () {}),
+                                    Text(
+                                      like,
+                                      style: const TextStyle(
+                                        fontSize: 17,
+                                        color: Colors.pink,
+                                      ),
+                                    ),
+                                    IconButton(
+                                        icon: Icon(
+                                          Icons.restaurant_rounded,
+                                          color: Colors.green,
+                                          size: 17,
+                                        ),
+                                        onPressed: () {}),
+                                    Text(
+                                      eat,
+                                      style: const TextStyle(
+                                        fontSize: 17,
+                                        color: Colors.green,
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                                TextButton(
+                                  onPressed: () {
+                                    Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
+                                        builder: (context) => ProfileDetail(
+                                        ),
+                                      ),
+                                    );
+                                  },
+                                  child: const Text(
+                                    'more',
+                                    style: TextStyle(
+                                      fontSize: 15,
+                                    ),
+                                  ),
+                                  style: TextButton.styleFrom(
+                                    // padding: const EdgeInsets.all(0.0),
+                                    minimumSize: const Size(5, 3),
+                                  ),
+                                ),
+                              ],
                             ),
-                          ],
-                        ),
-                      ],
+                          ),
+                        ],
+                      ),
                     ),
                   ),
                 ],
-              ),
-            ),
-          ),
+              )),
+
         ],
       ),
     );

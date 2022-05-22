@@ -1,90 +1,69 @@
-// import 'dart:async';
-//
-// import 'package:cloud_firestore/cloud_firestore.dart';
-// import 'package:firebase_auth/firebase_auth.dart';
-// import 'package:firebase_core/firebase_core.dart';
-// import 'package:flutter/material.dart';
+import 'dart:async';
+
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_core/firebase_core.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
-// import 'src/authentication.dart';
-// import 'package:google_sign_in/google_sign_in.dart';
-//
-// import 'model/product.dart';
-// import 'firebase_options.dart';
+
+enum ApplicationLoginState {
+  loggedOut,
+  emailAddress,
+  register,
+  password,
+  loggedIn,
+}
 
 class ApplicationState extends ChangeNotifier {
-  // ApplicationState() {
-  //   init();
-  // }
-  //
-  // ApplicationLoginState _loginState = ApplicationLoginState.loggedOut;
-  //
-  // ApplicationLoginState get loginState => _loginState;
-  //
-  // String? _photoURL;
-  // String? get photoURL => _photoURL;
-  //
-  // String? _email;
-  // String? get email => _email;
-  //
-  // String? _uid;
-  // String? get uid => _uid;
-  //
-  // bool? _google;
-  // get isGooge => _google;
-  //
-  // String? _name;
-  // String? get name => _name;
-  //
-  //
-  // Future<void> init() async {
-  //   FirebaseAuth.instance.userChanges().listen((User? user) {
-  //     if (user != null) {
-  //       if (user.email == null)
-  //         _google = false;
-  //       else
-  //         _google = true;
-  //       _email = user.email;
-  //       _photoURL = user.photoURL;
-  //       _uid = user.uid;
-  //       _loginState = ApplicationLoginState.loggedIn;
-  //
-  //       if (_google == true) _name = getName(user.uid).toString();
-  //
-  //       addUserColl();
-  //
-  //       _productSubscription = FirebaseFirestore.instance
-  //           .collection('products')
-  //           .orderBy('productPrice', descending: false)
-  //           .snapshots()
-  //           .listen((snapshot) {
-  //         _products = [];
-  //         for (var document in snapshot.docs) {
-  //           _products.add(
-  //             Product(
-  //               picfile: document.data()['picfile'].toString(),
-  //               ownerId: document.data()['ownerId'].toString(),
-  //               ownerName: document.data()['ownerName'].toString(),
-  //               productCreated: document.data()['productCreated'],
-  //               productModified: document.data()['productModified'],
-  //               docId: document.id.toString(),
-  //               productName: document.data()['productName'].toString(),
-  //               productPrice: document.data()['productPrice'].toString(),
-  //               productDesc: document.data()['productDesc'].toString(),
-  //               productLikes: document.data()['productLikes'].toString(),
-  //             ),
-  //           );
-  //         }
-  //         notifyListeners();
-  //       });
-  //     } else {
-  //       _loginState = ApplicationLoginState.loggedOut;
-  //
-  //       _products = [];
-  //       _productSubscription?.cancel();
-  //     }
-  //     notifyListeners();
-  //   });
-  // }
+  ApplicationState() {
+    init();
+  }
+
+  ApplicationLoginState _loginState = ApplicationLoginState.loggedOut;
+
+  ApplicationLoginState get loginState => _loginState;
+
+  String? _photoURL;
+
+  String? get photoURL => _photoURL;
+
+  String? _email;
+
+  String? get email => _email;
+
+  String? _uid;
+
+  String? get uid => _uid;
+
+  bool? _google;
+
+  get isGooge => _google;
+
+  String? _name;
+
+  String? get name => _name;
+
+  Future<void> init() async {
+    FirebaseAuth.instance.userChanges().listen((User? user) {
+      if (user != null) {
+        if (user.email == null)
+          _google = false;
+        else
+          _google = true;
+        _email = user.email;
+        _photoURL = user.photoURL;
+        _uid = user.uid;
+        _loginState = ApplicationLoginState.loggedIn;
+
+        if (_google == true) _name = getName(user.uid).toString();
+
+        addUserColl();
+      } else {
+        _loginState = ApplicationLoginState.loggedOut;
+      }
+      notifyListeners();
+    });
+  }
   //
   //
   //
@@ -147,26 +126,26 @@ class ApplicationState extends ChangeNotifier {
   //   }
   // }
   //
-  // Future<DocumentReference> addProductToMarket(
-  //     String file, String name, int price, String desc) {
-  //   if (_loginState != ApplicationLoginState.loggedIn) {
-  //     throw Exception('Must be logged in');
-  //   }
-  //
-  //   return FirebaseFirestore.instance
-  //       .collection('products')
-  //       .add(<String, dynamic>{
-  //     'picfile': file,
-  //     'ownerId': FirebaseAuth.instance.currentUser!.uid,
-  //     'ownerName': FirebaseAuth.instance.currentUser!.displayName,
-  //     'productCreated': FieldValue.serverTimestamp(),
-  //     'productModified': FieldValue.serverTimestamp(),
-  //     'productName': name,
-  //     'productPrice': price,
-  //     'productDesc': desc,
-  //     'productLikes': 0,
-  //   });
-  // }
+  Future<DocumentReference> addAnimal(
+      int age, String desc, String url, String name, String sex, int weight) {
+    if (_loginState != ApplicationLoginState.loggedIn) {
+      throw Exception('Must be logged in');
+    }
+
+    return FirebaseFirestore.instance
+        .collection('animal')
+        .add(<String, dynamic>{
+      'Category': 'cat',
+      'age': age,
+      'desc': desc,
+      'eat': 0,
+      'image': url,
+      'like': 0,
+      'name': name,
+      'sex': sex,
+      'weight': weight,
+    });
+  }
   //
   // Future<void> updateProduct(
   //     String docId, String file, String name, int price, String desc) {
@@ -266,36 +245,38 @@ class ApplicationState extends ChangeNotifier {
   //   FirebaseAuth.instance.signOut();
   // }
   //
-  // void addUserColl() {
-  //   if (_loginState != ApplicationLoginState.loggedIn) {
-  //     throw Exception('Must be logged in');
-  //   }
+  void addUserColl() {
+    if (_loginState != ApplicationLoginState.loggedIn) {
+      throw Exception('Must be logged in');
+    }
+
+    if (checkExist(uid!) == false) {
+      FirebaseFirestore.instance.collection('users').doc(uid).set(({
+            'email': FirebaseAuth.instance.currentUser!.email,
+            'name': FirebaseAuth.instance.currentUser!.displayName,
+            'status_message': "I promise to take the test honestly before GOD.",
+            'uid': FirebaseAuth.instance.currentUser!.uid,
+          }));
+    }
+  }
+
   //
-  //   if (checkExist(uid!) == false) {
-  //     FirebaseFirestore.instance.collection('users').doc(uid).set(({
-  //           'email': FirebaseAuth.instance.currentUser!.email,
-  //           'name': FirebaseAuth.instance.currentUser!.displayName,
-  //           'status_message': "I promise to take the test honestly before GOD.",
-  //           'uid': FirebaseAuth.instance.currentUser!.uid,
-  //         }));
-  //   }
-  // }
+  Future<bool> checkExist(String userId) {
+    return FirebaseFirestore.instance
+        .collection('users')
+        .doc(userId)
+        .snapshots()
+        .contains(userId);
+  }
+
   //
-  // Future<bool> checkExist(String userId) {
-  //   return FirebaseFirestore.instance
-  //       .collection('users')
-  //       .doc(userId)
-  //       .snapshots()
-  //       .contains(userId);
-  // }
-  //
-  // getName(String? uid) async {
-  //   await FirebaseFirestore.instance.collection("users").get().then((event) {
-  //     for (var doc in event.docs) {
-  //       if (doc.id == uid) {
-  //         return doc.get("name") as String;
-  //       }
-  //     }
-  //   });
-  // }
+  getName(String? uid) async {
+    await FirebaseFirestore.instance.collection("users").get().then((event) {
+      for (var doc in event.docs) {
+        if (doc.id == uid) {
+          return doc.get("name") as String;
+        }
+      }
+    });
+  }
 }
