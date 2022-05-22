@@ -1,5 +1,8 @@
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
+import 'package:team_project/provider/dropDownProvider.dart';
+import 'package:team_project/provider/loginProvider.dart';
+import 'package:team_project/provider/profileProvider.dart';
 import 'appstate.dart';
 import 'profiledetail.dart';
 import 'profilelist.dart';
@@ -14,11 +17,18 @@ Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp();
   runApp(
-    ChangeNotifierProvider(
-      create: (context) => ApplicationState(),
-      builder: (context, _) => const MyApp(),
-    ),
-  );
+      MultiProvider(
+        providers: [
+          ChangeNotifierProvider(create: (_) => ProfileProvider()),
+          ChangeNotifierProvider(create: (_) => LoginProvider()),
+          ChangeNotifierProvider(create: (_) => DropDownProvider()),
+        ],
+        child: ChangeNotifierProvider(
+          create: (context) => ApplicationState(),
+          builder: (context, _) => const MyApp(),
+        ),
+      ));
+  }
 
 class MyApp extends StatelessWidget {
   const MyApp({Key? key}) : super(key: key);
@@ -29,7 +39,7 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       title: 'Flutter Demo',
       theme: ThemeData(
-        primarySwatch: Colors.blue,
+        primarySwatch: Colors.yellow,
       ),
       home: const MyHomePage(title: 'Flutter Demo Home Page'),
     );
@@ -67,40 +77,35 @@ class _MyHomePageState extends State<MyHomePage> {
             const Text(
               'You have pushed the button this many times:',
             ),
-          ElevatedButton(onPressed: (){
-            Navigator.push(context, new MaterialPageRoute(
-                builder: (context) =>
-                new LoginPage())
-            );
-
-          }, child: Text('login')),
-            ElevatedButton(onPressed: (){
+            ElevatedButton(onPressed: () {
               Navigator.push(context, new MaterialPageRoute(
                   builder: (context) =>
-                   MainPage())
+                  new LoginPage())
               );
-
+            }, child: Text('login')),
+            ElevatedButton(onPressed: () {
+              Navigator.push(context, new MaterialPageRoute(
+                  builder: (context) =>
+                      MainPage())
+              );
             }, child: Text('main page')),
-            ElevatedButton(onPressed: (){
+            ElevatedButton(onPressed: () {
               Navigator.push(context, new MaterialPageRoute(
                   builder: (context) =>
                   new ProfileDetail())
               );
-
             }, child: Text('profile detail')),
-            ElevatedButton(onPressed: (){
+            ElevatedButton(onPressed: () {
               Navigator.push(context, new MaterialPageRoute(
                   builder: (context) =>
                   new ProfileList())
               );
-
             }, child: Text('profile list')),
-            ElevatedButton(onPressed: (){
+            ElevatedButton(onPressed: () {
               Navigator.push(context, new MaterialPageRoute(
                   builder: (context) =>
                   new UpdateProfile())
               );
-
             }, child: Text('update profile')),
 
           ],

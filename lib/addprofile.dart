@@ -1,4 +1,15 @@
+import 'dart:io';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:file_picker/file_picker.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:firebase_storage/firebase_storage.dart';
+import 'package:image_picker/image_picker.dart';
+import 'package:tflite/tflite.dart';
+
+import 'animal_detect.dart';
+import 'Storage.dart';
+import 'appstate.dart';
 
 class AddProfile extends StatefulWidget {
   const AddProfile({Key? key}) : super(key: key);
@@ -8,13 +19,41 @@ class AddProfile extends StatefulWidget {
 }
 
 class _AddProfileState extends State<AddProfile> {
+  File? _image;
+  final picker = ImagePicker();
+  List? _outputs;
+
+  final Storage storage = Storage();
   final _name = TextEditingController();
   final _age = TextEditingController();
   final _sex = TextEditingController();
   final _weight = TextEditingController();
   final _desc = TextEditingController();
+  final ScrollController _scrollController = ScrollController();
 
   final _formKey = GlobalKey<FormState>(debugLabel: '_AddProfileState');
+  FirebaseAuth _auth = FirebaseAuth.instance;
+  String _fileName = 'logo.png';
+
+  @override
+  void initState() {
+    super.initState();
+    loadModel().then((value) {
+      setState(() {});
+    });
+  }
+
+  // 모델과 label.txt를 가져온다.
+  loadModel() async {
+    await Tflite.loadModel(
+      model: "assets/model_unquant.tflite",
+      labels: "assets/testlabel.txt",
+    ).then((value) {
+      setState(() {
+        //_loading = false;
+      });
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -30,67 +69,153 @@ class _AddProfileState extends State<AddProfile> {
                   color: Colors.white,
                 ),
               ),
-              onPressed: () {
+              onPressed: () async {
+                storage.uploadFile(_image!.path, _name.text);
+                if (_formKey.currentState!.validate()) {
+                  storage.uploadFile(_image!.path, _name.text);
+                  FirebaseFirestore.instance
+                      .collection('animal')
+                      .add(<String, dynamic>{
+                    'Category': _outputs![0]['label'].toString().toUpperCase(),
+                    'age': int.parse(_age.text),
+                    'desc': _desc.text,
+                    'eat': 0,
+                    'image': url,
+                    'like': 0,
+                    'name': _name.text,
+                    'sex': _sex.text,
+                    'weight': int.parse(_weight.text),
+                  });
+                  _name.clear();
+                  _sex.clear();
+                  _desc.clear();
+                  _weight.clear();
+                  _age.clear();
+                }
                 Navigator.pop(context);
               }),
         ],
       ),
-      body: Container(
-        padding: const EdgeInsets.all(30),
-        child: Form(
-          key: _formKey,
-          child: Column(
-            children: <Widget>[
-              IconButton(icon: Icon(Icons.add, size: 80), onPressed: () {}),
-              SizedBox(
-                height: 50,
-              ),
-              TextFormField(
-                controller: _name,
-                decoration: const InputDecoration(
-                  filled: true,
+      body: Scrollbar(
+        controller: _scrollController,
+        isAlwaysShown: false,
+        thickness: 15,
+        child: ListView(
+          controller: _scrollController,
+          children: <Widget>[
+            Column(
+              children: [
+                Container(
+                  color: const Color(0xffd0cece),
+                  margin: EdgeInsets.only(left: 0, right: 0),
+                  width: MediaQuery.of(context).size.width,
+                  height: MediaQuery.of(context).size.width,
+                  child: Center(
+                    child: _image == null
+                        ? Text('No image selected.')
+                        : Image.file(File(_image!.path)),
+                  ),
                 ),
-              ),
-              SizedBox(
-                height: 16,
-              ),
-              TextFormField(
-                controller: _age,
-                decoration: const InputDecoration(
-                  filled: true,
+                Padding(
+                  padding: const EdgeInsets.fromLTRB(0, 10, 10, 0),
+                  child: Align(
+                    alignment: Alignment.centerRight,
+                    child: IconButton(
+                      icon: const Icon(Icons.camera_alt),
+                      onPressed: () async {
+                        await getImage(ImageSource.gallery);
+                      },
+                    ),
+                  ),
                 ),
+              ],
+            ),
+            SizedBox(
+              height: 50,
+            ),
+            TextFormField(
+              controller: _name,
+              decoration: const InputDecoration(
+                filled: false,
+                labelText: "이름을 입력하세요",
               ),
-              SizedBox(
-                height: 16,
+            ),
+            SizedBox(
+              height: 16,
+            ),
+            TextFormField(
+              controller: _age,
+              decoration: const InputDecoration(
+                filled: false,
+                labelText: "나이를 입력하세요",
               ),
-              TextFormField(
-                controller: _sex,
-                decoration: const InputDecoration(
-                  filled: true,
-                ),
+            ),
+            SizedBox(
+              height: 16,
+            ),
+            TextFormField(
+              controller: _sex,
+              decoration: const InputDecoration(
+                filled: false,
+                labelText: "성별 입력하세요",
               ),
-              SizedBox(
-                height: 16,
+            ),
+            SizedBox(
+              height: 16,
+            ),
+            TextFormField(
+              controller: _weight,
+              decoration: const InputDecoration(
+                filled: false,
+                labelText: "몸무게 입력하세요",
               ),
-              TextFormField(
-                controller: _weight,
-                decoration: const InputDecoration(
-                  filled: true,
-                ),
+            ),
+            SizedBox(
+              height: 16,
+            ),
+            TextFormField(
+              controller: _desc,
+              decoration: const InputDecoration(
+                filled: false,
+                labelText: "특이사항을 입력하세요",
               ),
-              SizedBox(
-                height: 16,
-              ),
-              TextFormField(
-                controller: _desc,
-                decoration: const InputDecoration(
-                  filled: true,
-                ),
-              ),
-            ],
-          ),
+            ),
+            SizedBox(
+              height: 50,
+            ),
+          ],
         ),
       ),
     );
+  }
+
+  Future getImage(ImageSource imageSource) async {
+    final image = await picker.pickImage(source: imageSource);
+
+    setState(() {
+      _image = File(image!.path);
+      _fileName = _image!.path; // 가져온 이미지를 _image에 저장
+    });
+    await classifyImage(File(image!.path)); // 가져온 이미지를 분류 하기 위해 await을 사용
+  }
+
+  // 이미지 분류
+  Future classifyImage(File image) async {
+    print("$image");
+    var output = await Tflite.runModelOnImage(
+        path: image.path,
+        imageMean: 0.0,
+        // defaults to 117.0
+        imageStd: 255.0,
+        // defaults to 1.0
+        numResults: 2,
+        // defaults to 5
+        threshold: 0.2,
+        // defaults to 0.1
+        asynch: true // defaults to true
+        );
+    setState(() {
+      _outputs = output;
+    });
   }
 }
