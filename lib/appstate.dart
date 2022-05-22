@@ -64,7 +64,6 @@ class ApplicationState extends ChangeNotifier {
       notifyListeners();
     });
   }
-
   //
   //
   //
@@ -147,7 +146,6 @@ class ApplicationState extends ChangeNotifier {
       'weight': weight,
     });
   }
-
   //
   // Future<void> updateProduct(
   //     String docId, String file, String name, int price, String desc) {
