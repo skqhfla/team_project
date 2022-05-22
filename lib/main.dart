@@ -42,6 +42,7 @@ class MyApp extends StatelessWidget {
         primarySwatch: Colors.yellow,
       ),
       home: const MyHomePage(title: 'Flutter Demo Home Page'),
+
     );
   }
 }
@@ -111,7 +112,33 @@ class _MyHomePageState extends State<MyHomePage> {
           ],
         ),
       ),
-
+      bottomNavigationBar: BottomNavigationBar(
+        backgroundColor: Colors.yellow,
+        selectedItemColor: Colors.black ,
+        unselectedItemColor:Colors.black ,
+        items: [
+          BottomNavigationBarItem(
+              icon: Icon(Icons.home),
+              label: ''
+          ),
+          BottomNavigationBarItem(
+              icon: Icon(Icons.pets),
+              label: ''
+          ),
+          BottomNavigationBarItem(
+              icon: Icon(Icons.groups),
+              label: ''
+          ),
+          BottomNavigationBarItem(
+              icon: Icon(Icons.account_circle),
+              label: ''
+          ),
+        ],
+        onTap: (index){
+         // _idx = index;
+        },
+        //currentIndex: _idx,
+      ),
     );
   }
 }
