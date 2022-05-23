@@ -23,12 +23,15 @@ class _AddProfileState extends State<AddProfile> {
   final picker = ImagePicker();
   List? _outputs;
 
+  final isSelected = <bool>[false, true];
+
   final Storage storage = Storage();
   final _name = TextEditingController();
   final _age = TextEditingController();
   final _sex = TextEditingController();
   final _weight = TextEditingController();
   final _desc = TextEditingController();
+  final _live = TextEditingController();
   final ScrollController _scrollController = ScrollController();
 
   final _formKey = GlobalKey<FormState>(debugLabel: '_AddProfileState');
@@ -71,27 +74,28 @@ class _AddProfileState extends State<AddProfile> {
               ),
               onPressed: () async {
                 storage.uploadFile(_image!.path, _name.text);
-                if (_formKey.currentState!.validate()) {
-                  storage.uploadFile(_image!.path, _name.text);
-                  FirebaseFirestore.instance
-                      .collection('animal')
-                      .add(<String, dynamic>{
-                    'Category': _outputs![0]['label'].toString().toUpperCase(),
-                    'age': int.parse(_age.text),
-                    'desc': _desc.text,
-                    'eat': 0,
-                    'image': url,
-                    'like': 0,
-                    'name': _name.text,
-                    'sex': _sex.text,
-                    'weight': int.parse(_weight.text),
-                  });
-                  _name.clear();
-                  _sex.clear();
-                  _desc.clear();
-                  _weight.clear();
-                  _age.clear();
-                }
+                // if (_formKey.currentState!.validate()) {
+                storage.uploadFile(_image!.path, _name.text + ".png");
+                FirebaseFirestore.instance
+                    .collection('animal')
+                    .add(<String, dynamic>{
+                  'Category': _outputs![0]['label'].toString().toUpperCase(),
+                  'age': int.parse(_age.text),
+                  'desc': _desc.text,
+                  'eat': 0,
+                  'image': _name.text + ".png",
+                  'live': _live.text,
+                  'like': 0,
+                  'name': _name.text,
+                  'sex': _sex.text,
+                  'weight': int.parse(_weight.text),
+                });
+                _name.clear();
+                _sex.clear();
+                _desc.clear();
+                _weight.clear();
+                _age.clear();
+                //}
                 Navigator.pop(context);
               }),
         ],
@@ -128,8 +132,34 @@ class _AddProfileState extends State<AddProfile> {
                     ),
                   ),
                 ),
+                ToggleButtons(
+                  children: [
+                    Padding(
+                      padding: EdgeInsets.symmetric(horizontal: 16),
+                      child: Text("DOG"),
+                    ),
+                    Padding(
+                      padding: EdgeInsets.symmetric(horizontal: 16),
+                      child: Text("CAT"),
+                    ),
+                  ],
+                  isSelected: isSelected,
+                  onPressed: (index) {
+                    // Respond to button selection
+                    setState(() {
+                      isSelected[index] = !isSelected[index];
+                      if(index == 0){
+                        isSelected[1] = !isSelected[1];
+                      }else{
+                        isSelected[0] = !isSelected[0];
+                      }
+                    },
+                    );
+                  },
+                ),
               ],
             ),
+
             SizedBox(
               height: 50,
             ),
@@ -158,6 +188,16 @@ class _AddProfileState extends State<AddProfile> {
               decoration: const InputDecoration(
                 filled: false,
                 labelText: "성별 입력하세요",
+              ),
+            ),
+            SizedBox(
+              height: 16,
+            ),
+            TextFormField(
+              controller: _live,
+              decoration: const InputDecoration(
+                filled: false,
+                labelText: "사는 곳을 입력하세요",
               ),
             ),
             SizedBox(
@@ -213,9 +253,20 @@ class _AddProfileState extends State<AddProfile> {
         threshold: 0.2,
         // defaults to 0.1
         asynch: true // defaults to true
-        );
+    );
     setState(() {
       _outputs = output;
+      print(_outputs![0]['label'].toString().toUpperCase());
+      if(_outputs![0]['label'].toString().toUpperCase() == "CAT"){
+        isSelected[0] = false;
+        isSelected[1] = true;
+      }
+      else{
+        print(_outputs![0]['label'].toString().toUpperCase());
+        isSelected[0] = true;
+        isSelected[1] = false;
+      }
     });
   }
+
 }
