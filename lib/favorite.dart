@@ -4,7 +4,7 @@ import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 
 import 'mypage.dart';
-
+//
 class FavoritePage extends StatefulWidget {
   FavoritePage({required this.user});
 
