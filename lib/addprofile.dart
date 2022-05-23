@@ -6,7 +6,6 @@ import 'package:flutter/material.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:tflite/tflite.dart';
-
 import 'animal_detect.dart';
 import 'Storage.dart';
 import 'appstate.dart';
