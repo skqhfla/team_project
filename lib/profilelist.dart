@@ -213,10 +213,12 @@ class Animal extends StatelessWidget {
                                 ),
                                 TextButton(
                                   onPressed: () {
+
                                     Navigator.push(
                                       context,
                                       MaterialPageRoute(
                                         builder: (context) => ProfileDetail(
+                                          d: id
                                         ),
                                       ),
                                     );

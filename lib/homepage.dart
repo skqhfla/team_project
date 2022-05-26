@@ -1,5 +1,6 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:team_project/profilelist.dart';
 
 import 'mainpage.dart';
 import 'mypage.dart';
@@ -13,7 +14,7 @@ class HomePage extends StatefulWidget {
 class _HomePageState extends State<HomePage> {
   int _currentIndex = 0;
 
-  final List<Widget> _children = [MainPage(), MyPage()];
+  final List<Widget> _children = [MainPage(), MyPage(),ProfileList()];
   void _onTap(int index) {
     setState(() {
       _currentIndex = index;
@@ -37,6 +38,10 @@ class _HomePageState extends State<HomePage> {
               new BottomNavigationBarItem(
                 icon: Icon(Icons.person),
                 label: 'My Page',
+              ),
+              new BottomNavigationBarItem(
+                icon: Icon(Icons.person),
+                label: 'list',
               )
             ]
         )

@@ -93,7 +93,7 @@ class _MyHomePageState extends State<MyHomePage> {
             ElevatedButton(onPressed: () {
               Navigator.push(context, new MaterialPageRoute(
                   builder: (context) =>
-                  new ProfileDetail())
+                  new ProfileDetail(d:''))
               );
             }, child: Text('profile detail')),
             ElevatedButton(onPressed: () {
