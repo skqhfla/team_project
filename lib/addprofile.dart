@@ -119,17 +119,34 @@ class _AddProfileState extends State<AddProfile> {
                         : Image.file(File(_image!.path)),
                   ),
                 ),
-                Padding(
-                  padding: const EdgeInsets.fromLTRB(0, 10, 10, 0),
-                  child: Align(
-                    alignment: Alignment.centerRight,
-                    child: IconButton(
-                      icon: const Icon(Icons.camera_alt),
-                      onPressed: () async {
-                        await getImage(ImageSource.gallery);
-                      },
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.end,
+                  children: [
+                    Padding(
+                      padding: const EdgeInsets.fromLTRB(0, 10, 10, 0),
+                      child: Align(
+                        alignment: Alignment.centerRight,
+                        child: IconButton(
+                          icon: const Icon(Icons.add_a_photo),
+                          onPressed: () async {
+                            await getImage(ImageSource.camera);
+                          },
+                        ),
+                      ),
                     ),
-                  ),
+                    Padding(
+                      padding: const EdgeInsets.fromLTRB(0, 10, 10, 0),
+                      child: Align(
+                        alignment: Alignment.centerRight,
+                        child: IconButton(
+                          icon: const Icon(Icons.collections_rounded),
+                          onPressed: () async {
+                            await getImage(ImageSource.gallery);
+                          },
+                        ),
+                      ),
+                    ),
+                  ],
                 ),
                 ToggleButtons(
                   children: [
@@ -145,20 +162,20 @@ class _AddProfileState extends State<AddProfile> {
                   isSelected: isSelected,
                   onPressed: (index) {
                     // Respond to button selection
-                    setState(() {
-                      isSelected[index] = !isSelected[index];
-                      if(index == 0){
-                        isSelected[1] = !isSelected[1];
-                      }else{
-                        isSelected[0] = !isSelected[0];
-                      }
-                    },
+                    setState(
+                      () {
+                        isSelected[index] = !isSelected[index];
+                        if (index == 0) {
+                          isSelected[1] = !isSelected[1];
+                        } else {
+                          isSelected[0] = !isSelected[0];
+                        }
+                      },
                     );
                   },
                 ),
               ],
             ),
-
             SizedBox(
               height: 50,
             ),
@@ -252,20 +269,18 @@ class _AddProfileState extends State<AddProfile> {
         threshold: 0.2,
         // defaults to 0.1
         asynch: true // defaults to true
-    );
+        );
     setState(() {
       _outputs = output;
       print(_outputs![0]['label'].toString().toUpperCase());
-      if(_outputs![0]['label'].toString().toUpperCase() == "CAT"){
+      if (_outputs![0]['label'].toString().toUpperCase() == "CAT") {
         isSelected[0] = false;
         isSelected[1] = true;
-      }
-      else{
+      } else {
         print(_outputs![0]['label'].toString().toUpperCase());
         isSelected[0] = true;
         isSelected[1] = false;
       }
     });
   }
-
 }
