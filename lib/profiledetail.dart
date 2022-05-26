@@ -1,20 +1,45 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 
 int rice = 0;
+String docid='';
+String name='';
 
 class ProfileDetail extends StatefulWidget {
-  const ProfileDetail({Key? key}) : super(key: key);
+
+  final String d;
+
+  ProfileDetail(
+      {required this.d}
+      );
 
   @override
-  _ProfileDetailState createState() => _ProfileDetailState();
+  _ProfileDetailState createState() {
+    docid = d;
+    return _ProfileDetailState();
+  }
 }
 
 class _ProfileDetailState extends State<ProfileDetail> {
+
+  final CollectionReference animal =
+  FirebaseFirestore.instance.collection('animal');
+
+
+
+
+
   @override
   Widget build(BuildContext context) {
+    animal.doc(docid).get().then(
+            (DocumentSnapshot ds){
+              print('------------');
+          print(ds);
+          //print(title);
+        });
     return Scaffold(
       appBar: AppBar(
-        title: Text('프로필'),
+        title: Text(docid),
       ),
       body: Column(
         mainAxisAlignment: MainAxisAlignment.start,
@@ -30,7 +55,7 @@ class _ProfileDetailState extends State<ProfileDetail> {
             child: Row(
               children: [
                 Column(
-                  children: [Text('누룽지'), Text('3살 수컷 / 장량')],
+                  children: [Text(''), Text('3살 수컷 / 장량')],
                 ),
                 SizedBox(
                   width: 170,
