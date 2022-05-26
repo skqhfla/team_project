@@ -45,6 +45,7 @@ dependencies:
   path_provider: ^2.0.10
   google_sign_in: ^5.3.1
   google_maps_flutter: ^2.1.5
+  speech_to_text: ^5.5.0
 
 dev_dependencies:
   flutter_test:

@@ -5,6 +5,8 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:speech_to_text/speech_to_text.dart';
+import 'package:team_project/speech.dart';
 import 'package:tflite/tflite.dart';
 import 'animal_detect.dart';
 import 'Storage.dart';
@@ -25,6 +27,7 @@ class _AddProfileState extends State<AddProfile> {
   final isSelected = <bool>[false, true];
 
   final Storage storage = Storage();
+  static final _speech = SpeechToText();
   final _name = TextEditingController();
   final _age = TextEditingController();
   final _sex = TextEditingController();
@@ -98,6 +101,10 @@ class _AddProfileState extends State<AddProfile> {
                 Navigator.pop(context);
               }),
         ],
+      ),
+      floatingActionButton: FloatingActionButton(
+        child: Icon(Icons.mic_none, size: 30),
+        onPressed: toggleRecording,
       ),
       body: Scrollbar(
         controller: _scrollController,
@@ -283,4 +290,8 @@ class _AddProfileState extends State<AddProfile> {
       }
     });
   }
+
+  Future toggleRecording() => Speech.toggleRecording(
+        onResult: (text) => setState(() => _name.text = text),
+      );
 }
