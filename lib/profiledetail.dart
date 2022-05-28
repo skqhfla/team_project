@@ -133,7 +133,6 @@ class _ProfileDetailState extends State<ProfileDetail> {
                                 'name':snapshot.data!['name'],
                                 'sex': snapshot.data!['sex'],
                                 'weight': snapshot.data!['weight'],
-
                               });
                             });
                           },
