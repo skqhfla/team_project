@@ -7,6 +7,7 @@ import 'dart:io';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
+import 'chatpage.dart';
 import 'storage.dart';
 
 
@@ -17,6 +18,7 @@ int age = 0;
 String live = '';
 int eat = 0;
 String sex = '';
+List<dynamic> imagelist=[];
 
 
 
@@ -51,9 +53,11 @@ class _ProfileDetailState extends State<ProfileDetail> {
   @override
   Widget build(BuildContext context) {
     final Storage storage = Storage();
+
     return StreamBuilder<DocumentSnapshot>(
       stream: _stream,
       builder: (context, AsyncSnapshot<DocumentSnapshot> snapshot) {
+        imagelist=snapshot.data!['imagelist'];
         return Scaffold(
           resizeToAvoidBottomInset : false,
           appBar: AppBar(
@@ -102,7 +106,13 @@ class _ProfileDetailState extends State<ProfileDetail> {
                       ),
                       IconButton(
                         icon: Icon(Icons.chat),
-                        onPressed: () {},
+                        onPressed: () {
+                          Navigator.push(context,
+                              MaterialPageRoute(builder: (context) => ChatPage(
+                                  d: docid,
+                              )));
+
+                        },
                       ),
                       IconButton(
                         icon: Icon(Icons.favorite),
@@ -234,7 +244,22 @@ class _ProfileDetailState extends State<ProfileDetail> {
                         String f= await getImage(ImageSource.camera);
                         print('----file_name----');
                         print(f);
-                        storage.uploadFile(_image!.path,'사진');
+                        storage.uploadFile(_image!.path,'5/29');
+                        imagelist.add(_image!.path.toString());
+                        animal.doc(docid).set({
+                          'Category':snapshot.data!['Category'],
+                          'age':snapshot.data!['age'],
+                          'desc': snapshot.data!['desc'],
+                          'eat': rice,
+                          'image': snapshot.data!['image'],
+                          'live': snapshot.data!['live'],
+                          'like': snapshot.data!['like'],
+                          'name':snapshot.data!['name'],
+                          'sex': snapshot.data!['sex'],
+                          'weight': snapshot.data!['weight'],
+                          'imagelist':imagelist,
+                        });
+
                       },
                     ),
                   ),
