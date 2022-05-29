@@ -1,10 +1,10 @@
 import 'dart:async';
 
-import 'package:firebase_auth/firebase_auth.dart';
+import 'package:location/location.dart';
 import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
-import 'package:team_project/profilelist.dart';
-//
+import 'package:geolocator/geolocator.dart';
+
 import 'mypage.dart';
 
 class MainPage extends StatefulWidget {
@@ -17,26 +17,25 @@ class _MainPageState extends State<MainPage> {
 
   Completer<GoogleMapController> _controller = Completer();
   TextEditingController _search = TextEditingController();
+  Location currentLocation = Location();
+  Set<Marker> _markers={};
 
-  int _currentIndex = 0;
-  final List<Widget> _children = [MainPage(), MyPage()];
+  double currentLatitude = 0;
+  double currentLongitude = 0;
 
-  void _onTab(int index) {
-    setState(() {
-      _currentIndex = index;
-    });
+  @override
+  void initState() {
+    super.initState();
+    getLocation();
   }
 
-  static final CameraPosition _kGooglePlex = CameraPosition(
-    target: LatLng(37.42796133580664, -122.085749655962),
-    zoom: 14.4746,
-  );
-
-  static final CameraPosition _kLake = CameraPosition(
-      bearing: 192.8334901395799,
-      target: LatLng(37.43296265331129, -122.08832357078792),
-      tilt: 59.440717697143555,
-      zoom: 19.151926040649414);
+  getLocation() async {
+    LocationPermission permission = await Geolocator.requestPermission();
+    Position position =
+    await Geolocator.getCurrentPosition();
+    currentLatitude = position.latitude;
+    currentLongitude = position.longitude;
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -62,17 +61,34 @@ class _MainPageState extends State<MainPage> {
             ),
             SizedBox(height: 50,),
             Container(
-              height: 400,
-              child: GoogleMap(
-                mapType: MapType.hybrid,
-                initialCameraPosition: _kGooglePlex,
-                onMapCreated: (GoogleMapController controller) {
-                  _controller.complete(controller);
-                },
-              ),
+                height: 400,
+                child: currentLatitude != 0 && currentLongitude !=0 ?
+                GoogleMap(
+                    myLocationEnabled: true,
+                    initialCameraPosition: CameraPosition(
+                        target: LatLng(
+                          currentLatitude,
+                          currentLongitude
+                        ),
+                      zoom: 18,
+                    ),
+                    onMapCreated: (GoogleMapController controller) {
+                      _controller.complete(controller);
+                    },
+                ) :
+                Text('loading')
+
             ),
           ],
         ),
+      ),
+      floatingActionButton: FloatingActionButton(
+        child: Icon(Icons.location_searching,color: Colors.white,),
+        onPressed: (){
+          setState(() {
+            getLocation();
+          });
+        },
       ),
     );
   }
