@@ -66,9 +66,8 @@ class _ProfileDetailState extends State<ProfileDetail> {
                         if (snapshot.connectionState == ConnectionState.done &&
                             snapshot.hasData) {
                           return Container(
-                            // width:400,
-                            height: 200,
-
+                            width: MediaQuery.of(context).size.width,
+                            height: MediaQuery.of(context).size.width,
                             child: Image.network(
                               snapshot.data!,
                               fit: BoxFit.fill,
@@ -230,41 +229,7 @@ class _ProfileDetailState extends State<ProfileDetail> {
                       textAlign: TextAlign.left,
                     ),
                   ),
-                  Padding(
-                    padding: const EdgeInsets.fromLTRB(0, 10, 10, 0),
-                    child: Align(
-                      alignment: Alignment.centerRight,
-                      child: IconButton(
-                        icon: const Icon(Icons.add_a_photo),
-                        onPressed: () async {
-                          String f = await getImage(ImageSource.camera);
-                          print('----file_name----');
-                          print(f);
-                          int listlength = imagelist.length;
-                          String imagename =
-                              '${snapshot.data!['name']}${listlength + 1}';
-                          storage.uploadFile(_image!.path, imagename);
-                          imagelist.add(imagename);
-                          animal.doc(docid).set({
-                            'Category': snapshot.data!['Category'],
-                            'age': snapshot.data!['age'],
-                            'desc': snapshot.data!['desc'],
-                            'eat': rice,
-                            'image': snapshot.data!['image'],
-                            'live': snapshot.data!['live'],
-                            'like': snapshot.data!['like'],
-                            'name': snapshot.data!['name'],
-                            'sex': snapshot.data!['sex'],
-                            'weight': snapshot.data!['weight'],
-                            'imagelist': imagelist,
-                          });
-                          setState(() {
 
-                          });
-                        },
-                      ),
-                    ),
-                  ),
                   // Padding(padding: const EdgeInsets.fromLTRB(30.0, 8.0, 30.0, 5.0),
                   //   child:  Row(
                   //     children: [
@@ -367,75 +332,90 @@ class _ProfileDetailState extends State<ProfileDetail> {
                   // )
 
                   SizedBox(
-                   // height:900,
-                    child: Expanded(child: GridView.builder(
-                      shrinkWrap: true,
-                      gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                        crossAxisCount: 3, //1 개의 행에 보여줄 item 개수
-                        childAspectRatio: 1 / 1, //item 의 가로 1, 세로 2 의 비율
-                        mainAxisSpacing: 10, //수평 Padding
-                        crossAxisSpacing: 10, //수직 Padding
-                      ),
-                      itemCount: imagelist.length,
-                      itemBuilder: (BuildContext context, int index) {
-                        //item 의 반목문 항목 형성
-                        return Container(
-                          child: Column(
-                            children: [
-                              FutureBuilder(
+                    // height:900,
+                    child: Expanded(
+                      child: Padding(
+                        padding: EdgeInsets.all(10.0),
+                        child: GridView.builder(
+                          shrinkWrap: true,
+                          gridDelegate:
+                              SliverGridDelegateWithFixedCrossAxisCount(
+                            crossAxisCount: 3, //1 개의 행에 보여줄 item 개수
+                            childAspectRatio: 1 / 1, //item 의 가로 1, 세로 2 의 비율
+                            mainAxisSpacing: 10, //수평 Padding
+                            crossAxisSpacing: 10, //수직 Padding
+                          ),
+                          itemCount: imagelist.length +1,
+                          itemBuilder: (BuildContext context, int index) {
+                            //item 의 반목문 항목 형성
+                            print(index);
+                           return index == imagelist.length
+                                ?   Padding(
+                             padding: const EdgeInsets.fromLTRB(0, 10, 10, 0),
+                             child: Align(
+                               alignment: Alignment.centerRight,
+                               child: IconButton(
+                                 icon: const Icon(Icons.add_a_photo),
+                                 onPressed: () async {
+                                   String f = await getImage(ImageSource.camera);
+                                   print('----file_name----');
+                                   print(f);
+                                   int listlength = imagelist.length;
+                                   String imagename =
+                                       '${snapshot.data!['name']}${listlength + 1}';
+                                   storage.uploadFile(_image!.path, imagename);
+                                   imagelist.add(imagename);
+                                   animal.doc(docid).set({
+                                     'Category': snapshot.data!['Category'],
+                                     'age': snapshot.data!['age'],
+                                     'desc': snapshot.data!['desc'],
+                                     'eat': rice,
+                                     'image': snapshot.data!['image'],
+                                     'live': snapshot.data!['live'],
+                                     'like': snapshot.data!['like'],
+                                     'name': snapshot.data!['name'],
+                                     'sex': snapshot.data!['sex'],
+                                     'weight': snapshot.data!['weight'],
+                                     'imagelist': imagelist,
+                                   });
+                                   setState(() {});
+                                 },
+                               ),
+                             ),
+                           )
+                                : Container(
+                              child: FutureBuilder(
                                   future: storage.downloadURL(imagelist[index]),
                                   //snapshot.data!['name']
                                   builder: (BuildContext context,
                                       AsyncSnapshot<String> snapshot) {
                                     if (snapshot.connectionState ==
-                                        ConnectionState.done &&
+                                            ConnectionState.done &&
                                         snapshot.hasData) {
-                                      return Container(
-                                       width:180,
-                                      height: 300,
-                                        child: Image.network(
-                                          snapshot.data!,
-                                          fit: BoxFit.fill,
-                                        ),
-                                      );
+                                    return  Container(
+                                              //width:180,
+                                              // height: 300,
+                                              child: ClipRRect(
+                                                borderRadius:
+                                                    BorderRadius.circular(10.0),
+                                                child: Image.network(
+                                                  snapshot.data!,
+                                                  fit: BoxFit.fill,
+                                                ),
+                                              ),
+                                            );
                                     }
                                     if (!snapshot.hasData) {
                                       return CircularProgressIndicator();
                                     }
                                     return Container();
                                   }),
-                              // Container(
-                              //   height: 50,
-                              //   alignment: Alignment.center,
-                              //   color: Colors.yellow,
-                              //   child: Text(
-                              //     '$index',
-                              //     style: TextStyle(
-                              //       fontSize: 20,
-                              //     ),
-                              //   ),
-                              // ),
-                              // Expanded(
-                              //   child: Container(
-                              //     color: Colors.lightGreenAccent,
-                              //     alignment: Alignment.center,
-                              //     child: Text(
-                              //       imagelist[index].toString(),
-                              //       style: TextStyle(
-                              //         fontSize: 20,
-                              //       ),
-                              //     ),
-                              //   ),
-                              // ),
-                            ],
-                          ),
-                        );
-                      },
-                    ),),
-                      
-                      
+                            );
+                          },
+                        ),
+                      ),
                     ),
-
+                  ),
                 ],
               ),
             ));
