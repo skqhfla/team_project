@@ -50,8 +50,6 @@ dependencies:
   geolocator:
   location:
   flutter_chat_ui:
-  video_player:
-
   video_player: ^2.4.2
   image_picker_platform_interface: ^2.5.0
 

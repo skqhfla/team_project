@@ -113,8 +113,9 @@ class _ProfileDetailState extends State<ProfileDetail> {
                                 context,
                                 MaterialPageRoute(
                                     builder: (context) => ChatPage(
-                                          d: docid,
-                                        )));
+                                      doc: docid,
+                                      name: snapshot.data!['name'],
+                                    )));
                           },
                         ),
                         IconButton(
