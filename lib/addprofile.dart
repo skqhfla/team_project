@@ -33,7 +33,8 @@ class _AddProfileState extends State<AddProfile> {
   final _sex = TextEditingController();
   final _weight = TextEditingController();
   final _desc = TextEditingController();
-  final _live = TextEditingController();
+  late String _live;
+
   final ScrollController _scrollController = ScrollController();
 
   final _formKey = GlobalKey<FormState>(debugLabel: '_AddProfileState');
@@ -75,7 +76,6 @@ class _AddProfileState extends State<AddProfile> {
                 ),
               ),
               onPressed: () async {
-                storage.uploadFile(_image!.path, _name.text);
                 // if (_formKey.currentState!.validate()) {
                 storage.uploadFile(_image!.path, _name.text + ".png");
                 FirebaseFirestore.instance
@@ -86,7 +86,7 @@ class _AddProfileState extends State<AddProfile> {
                   'desc': _desc.text,
                   'eat': 0,
                   'image': _name.text + ".png",
-                  'live': _live.text,
+                  'live': _live,
                   'like': 0,
                   'name': _name.text,
                   'sex': _sex.text,
@@ -118,8 +118,14 @@ class _AddProfileState extends State<AddProfile> {
                 Container(
                   color: const Color(0xffd0cece),
                   margin: EdgeInsets.only(left: 0, right: 0),
-                  width: MediaQuery.of(context).size.width,
-                  height: MediaQuery.of(context).size.width,
+                  width: MediaQuery
+                      .of(context)
+                      .size
+                      .width,
+                  height: MediaQuery
+                      .of(context)
+                      .size
+                      .width,
                   child: Center(
                     child: _image == null
                         ? Text('No image selected.')
@@ -170,7 +176,7 @@ class _AddProfileState extends State<AddProfile> {
                   onPressed: (index) {
                     // Respond to button selection
                     setState(
-                      () {
+                          () {
                         isSelected[index] = !isSelected[index];
                         if (index == 0) {
                           isSelected[1] = !isSelected[1];
@@ -216,12 +222,12 @@ class _AddProfileState extends State<AddProfile> {
             SizedBox(
               height: 16,
             ),
-            TextFormField(
-              controller: _live,
-              decoration: const InputDecoration(
-                filled: false,
-                labelText: "사는 곳을 입력하세요",
-              ),
+            Row(
+                children: [
+                  TextButton(
+                    onPressed: () {}, child: Text("af"),
+                  ),
+                  ]
             ),
             SizedBox(
               height: 16,
@@ -276,7 +282,7 @@ class _AddProfileState extends State<AddProfile> {
         threshold: 0.2,
         // defaults to 0.1
         asynch: true // defaults to true
-        );
+    );
     setState(() {
       _outputs = output;
       print(_outputs![0]['label'].toString().toUpperCase());
@@ -291,7 +297,8 @@ class _AddProfileState extends State<AddProfile> {
     });
   }
 
-  Future toggleRecording() => Speech.toggleRecording(
+  Future toggleRecording() =>
+      Speech.toggleRecording(
         onResult: (text) => setState(() => _name.text = text),
       );
 }

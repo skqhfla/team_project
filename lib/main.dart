@@ -102,12 +102,12 @@ class _MyHomePageState extends State<MyHomePage> {
                   new ProfileList())
               );
             }, child: Text('profile list')),
-            ElevatedButton(onPressed: () {
-              Navigator.push(context, new MaterialPageRoute(
-                  builder: (context) =>
-                  new UpdateProfile())
-              );
-            }, child: Text('update profile')),
+            // ElevatedButton(onPressed: () {
+            //   Navigator.push(context, new MaterialPageRoute(
+            //       builder: (context) =>
+            //       new UpdateProfile())
+            //   );
+            // }, child: Text('update profile')),
 
           ],
         ),
