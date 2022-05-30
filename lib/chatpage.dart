@@ -15,29 +15,10 @@ class ChatPage extends StatefulWidget {
   ChatPage({required this.doc, required this.name});
 
   @override
-  _ChatPageState createState(){
+  _ChatPageState createState() {
     docid = doc;
     petname = name;
     return _ChatPageState();
-
-
-import 'package:flutter/material.dart';
-
-String docid='';
-
-class ChatPage extends StatefulWidget {
-  //const ChatPage({Key? key}) : super(key: key);
-  final String d;
-
-  ChatPage({required this.d});
-
-
-  @override
-  _ChatPageState createState(){
-    docid = d;
-    return _ChatPageState();
-
-
   }
 }
 
@@ -213,11 +194,11 @@ class _ChatPageState extends State<ChatPage> {
         ),
       )
 
-        title: Text(docid)
-      ),
+        //title: Text(docid)
+      );
 
 
-    );
+
   }
 }
 
