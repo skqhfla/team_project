@@ -399,4 +399,8 @@ class AspectRatioVideoState extends State<AspectRatioVideo> {
       return Container();
     }
   }
+
 }
+
+}
+

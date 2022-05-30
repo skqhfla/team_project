@@ -4,6 +4,7 @@ import 'package:team_project/provider/dropDownProvider.dart';
 import 'package:team_project/provider/loginProvider.dart';
 import 'package:team_project/provider/profileProvider.dart';
 import 'appstate.dart';
+//import 'chart.dart';
 import 'profiledetail.dart';
 import 'profilelist.dart';
 import 'updateprofile.dart';
@@ -102,6 +103,12 @@ class _MyHomePageState extends State<MyHomePage> {
                   new UpdateProfile())
               );
             }, child: Text('update profile')),
+            // ElevatedButton(onPressed: () {
+            //   Navigator.push(context, new MaterialPageRoute(
+            //       builder: (context) =>
+            //       new chartPage())
+            //   );
+            // }, child: Text('chart page ')),
 
           ],
         ),

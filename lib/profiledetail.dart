@@ -36,10 +36,10 @@ class _ProfileDetailState extends State<ProfileDetail> {
   bool isVideo = false;
 
   final CollectionReference animal =
-  FirebaseFirestore.instance.collection('animal');
+      FirebaseFirestore.instance.collection('animal');
 
   final Stream<DocumentSnapshot> _stream =
-  FirebaseFirestore.instance.collection('animal').doc(docid).snapshots();
+      FirebaseFirestore.instance.collection('animal').doc(docid).snapshots();
 
   @override
   Widget build(BuildContext context) {
@@ -113,9 +113,8 @@ class _ProfileDetailState extends State<ProfileDetail> {
                                 context,
                                 MaterialPageRoute(
                                     builder: (context) => ChatPage(
-                                      doc: docid,
-                                      name: snapshot.data!['name'],
-                                    )));
+                                          d: docid,
+                                        )));
                           },
                         ),
                         IconButton(
@@ -280,7 +279,7 @@ class _ProfileDetailState extends State<ProfileDetail> {
                         child: GridView.builder(
                           shrinkWrap: true,
                           gridDelegate:
-                          SliverGridDelegateWithFixedCrossAxisCount(
+                              SliverGridDelegateWithFixedCrossAxisCount(
                             crossAxisCount: 3, //1 개의 행에 보여줄 item 개수
                             childAspectRatio: 1 / 1, //item 의 가로 1, 세로 2 의 비율
                             mainAxisSpacing: 10, //수평 Padding
@@ -292,72 +291,72 @@ class _ProfileDetailState extends State<ProfileDetail> {
                             print(index);
                             return index == imagelist.length
                                 ? Padding(
-                              padding:
-                              const EdgeInsets.fromLTRB(0, 0, 0, 0),
-                              child: ClipRRect(
-                                borderRadius: BorderRadius.circular(10.0),
-                                child: Container(
-                                  color: Colors.grey,
-                                  child: IconButton(
-                                    icon: const Icon(Icons.add_a_photo),
-                                    onPressed: () async {
-                                      await getImage(ImageSource.camera);
-                                      int listlength = imagelist.length;
-                                      String imagename =
-                                          '${snapshot.data!['name']}${listlength + 1}';
-                                      storage.uploadFile(
-                                          _image!.path, imagename);
+                                    padding:
+                                        const EdgeInsets.fromLTRB(0, 0, 0, 0),
+                                    child: ClipRRect(
+                                      borderRadius: BorderRadius.circular(10.0),
+                                      child: Container(
+                                        color: Colors.grey,
+                                        child: IconButton(
+                                          icon: const Icon(Icons.add_a_photo),
+                                          onPressed: () async {
+                                            await getImage(ImageSource.camera);
+                                            int listlength = imagelist.length;
+                                            String imagename =
+                                                '${snapshot.data!['name']}${listlength + 1}';
+                                            storage.uploadFile(
+                                                _image!.path, imagename);
 
-                                      imagelist.add(imagename);
-                                      animal.doc(docid).set({
-                                        'Category':
-                                        snapshot.data!['Category'],
-                                        'age': snapshot.data!['age'],
-                                        'desc': snapshot.data!['desc'],
-                                        'eat': rice,
-                                        'image': snapshot.data!['image'],
-                                        'live': snapshot.data!['live'],
-                                        'like': snapshot.data!['like'],
-                                        'name': snapshot.data!['name'],
-                                        'sex': snapshot.data!['sex'],
-                                        'weight':
-                                        snapshot.data!['weight'],
-                                        'imagelist': imagelist,
-                                      });
-                                    },
-                                  ),
-                                ),
-                              ),
-                            )
-                                : Container(
-                              child: FutureBuilder(
-                                  future: storage
-                                      .downloadURL(imagelist[index]),
-                                  //snapshot.data!['name']
-                                  builder: (BuildContext context,
-                                      AsyncSnapshot<String> snapshot) {
-                                    if (snapshot.connectionState ==
-                                        ConnectionState.done &&
-                                        snapshot.hasData) {
-                                      return Container(
-                                        //width:180,
-                                        // height: 300,
-                                        child: ClipRRect(
-                                          borderRadius:
-                                          BorderRadius.circular(10.0),
-                                          child: Image.network(
-                                            snapshot.data!,
-                                            fit: BoxFit.fill,
-                                          ),
+                                            imagelist.add(imagename);
+                                            animal.doc(docid).set({
+                                              'Category':
+                                                  snapshot.data!['Category'],
+                                              'age': snapshot.data!['age'],
+                                              'desc': snapshot.data!['desc'],
+                                              'eat': rice,
+                                              'image': snapshot.data!['image'],
+                                              'live': snapshot.data!['live'],
+                                              'like': snapshot.data!['like'],
+                                              'name': snapshot.data!['name'],
+                                              'sex': snapshot.data!['sex'],
+                                              'weight':
+                                                  snapshot.data!['weight'],
+                                              'imagelist': imagelist,
+                                            });
+                                          },
                                         ),
-                                      );
-                                    }
-                                    if (!snapshot.hasData) {
-                                      return CircularProgressIndicator();
-                                    }
-                                    return Container();
-                                  }),
-                            );
+                                      ),
+                                    ),
+                                  )
+                                : Container(
+                                    child: FutureBuilder(
+                                        future: storage
+                                            .downloadURL(imagelist[index]),
+                                        //snapshot.data!['name']
+                                        builder: (BuildContext context,
+                                            AsyncSnapshot<String> snapshot) {
+                                          if (snapshot.connectionState ==
+                                                  ConnectionState.done &&
+                                              snapshot.hasData) {
+                                            return Container(
+                                              //width:180,
+                                              // height: 300,
+                                              child: ClipRRect(
+                                                borderRadius:
+                                                    BorderRadius.circular(10.0),
+                                                child: Image.network(
+                                                  snapshot.data!,
+                                                  fit: BoxFit.fill,
+                                                ),
+                                              ),
+                                            );
+                                          }
+                                          if (!snapshot.hasData) {
+                                            return CircularProgressIndicator();
+                                          }
+                                          return Container();
+                                        }),
+                                  );
                           },
                         ),
                       ),
