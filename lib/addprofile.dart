@@ -79,9 +79,16 @@ class _AddProfileState extends State<AddProfile> {
 
                 // if (_formKey.currentState!.validate()) {
                 storage.uploadFile(_image!.path, _name.text + ".png");
+
+                FirebaseFirestore.instance.collection('chat').doc(_name.text).set(
+                    {
+                      'list' : [],
+                    });
+
                 setState(() {
 
                 });
+
                 FirebaseFirestore.instance
                     .collection('animal')
                     .add(<String, dynamic>{
@@ -175,7 +182,7 @@ class _AddProfileState extends State<AddProfile> {
                   onPressed: (index) {
                     // Respond to button selection
                     setState(
-                      () {
+                          () {
                         isSelected[index] = !isSelected[index];
                         if (index == 0) {
                           isSelected[1] = !isSelected[1];
@@ -281,7 +288,7 @@ class _AddProfileState extends State<AddProfile> {
         threshold: 0.2,
         // defaults to 0.1
         asynch: true // defaults to true
-        );
+    );
     setState(() {
       _outputs = output;
       print(_outputs![0]['label'].toString().toUpperCase());
@@ -297,6 +304,6 @@ class _AddProfileState extends State<AddProfile> {
   }
 
   Future toggleRecording() => Speech.toggleRecording(
-        onResult: (text) => setState(() => _name.text = text),
-      );
+    onResult: (text) => setState(() => _name.text = text),
+  );
 }

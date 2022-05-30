@@ -13,10 +13,6 @@ class MyPage extends StatefulWidget {
 class _MyPageState extends State<MyPage> {
 
   User user = FirebaseAuth.instance.currentUser!;
-  Future<Null> name = FirebaseFirestore.instance.collection('user').doc(FirebaseAuth.instance.currentUser!.uid).get().then((DocumentSnapshot snapshots) {
-    snapshots.get('name');
-  });
-  TextEditingController _search = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
