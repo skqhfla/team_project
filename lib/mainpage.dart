@@ -8,20 +8,25 @@ import 'package:geolocator/geolocator.dart';
 import 'mypage.dart';
 
 class MainPage extends StatefulWidget {
+  MainPage({required this.Latitude, required this.Longitude});
+
+  double Latitude;
+  double Longitude;
 
   @override
-  _MainPageState createState() => _MainPageState();
+  _MainPageState createState() => _MainPageState(currentLatitude: Latitude, currentLongitude: Longitude);
 }
 
 class _MainPageState extends State<MainPage> {
+  _MainPageState({required this.currentLatitude, required this.currentLongitude});
 
   Completer<GoogleMapController> _controller = Completer();
   TextEditingController _search = TextEditingController();
   Location currentLocation = Location();
   Set<Marker> _markers={};
 
-  double currentLatitude = 0;
-  double currentLongitude = 0;
+  double currentLatitude;
+  double currentLongitude;
 
   @override
   void initState() {

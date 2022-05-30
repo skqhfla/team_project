@@ -48,6 +48,8 @@ dependencies:
   speech_to_text: ^5.5.0
   geolocator:
   location:
+  flutter_chat_ui:
+  video_player:
 
 dev_dependencies:
   flutter_test:
