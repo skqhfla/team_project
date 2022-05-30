@@ -4,6 +4,7 @@ import 'package:team_project/provider/dropDownProvider.dart';
 import 'package:team_project/provider/loginProvider.dart';
 import 'package:team_project/provider/profileProvider.dart';
 import 'appstate.dart';
+//import 'chart.dart';
 import 'profiledetail.dart';
 import 'profilelist.dart';
 import 'updateprofile.dart';
@@ -87,13 +88,7 @@ class _MyHomePageState extends State<MyHomePage> {
             ElevatedButton(onPressed: () {
               Navigator.push(context, new MaterialPageRoute(
                   builder: (context) =>
-                      MainPage())
-              );
-            }, child: Text('main page')),
-            ElevatedButton(onPressed: () {
-              Navigator.push(context, new MaterialPageRoute(
-                  builder: (context) =>
-                  new ProfileDetail())
+                  new ProfileDetail(d:''))
               );
             }, child: Text('profile detail')),
             ElevatedButton(onPressed: () {
@@ -102,12 +97,19 @@ class _MyHomePageState extends State<MyHomePage> {
                   new ProfileList())
               );
             }, child: Text('profile list')),
+
+            ElevatedButton(onPressed: () {
+              //Navigator.push(context, new MaterialPageRoute(
+               //   builder: (context) =>
+                 // new UpdateProfile())
+             // );
+            }, child: Text('update profile')),
             // ElevatedButton(onPressed: () {
             //   Navigator.push(context, new MaterialPageRoute(
             //       builder: (context) =>
-            //       new UpdateProfile())
+            //       new chartPage())
             //   );
-            // }, child: Text('update profile')),
+            // }, child: Text('chart page ')),
 
           ],
         ),

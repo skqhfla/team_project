@@ -78,6 +78,16 @@ class _AddProfileState extends State<AddProfile> {
               onPressed: () async {
                 // if (_formKey.currentState!.validate()) {
                 storage.uploadFile(_image!.path, _name.text + ".png");
+
+                FirebaseFirestore.instance.collection('chat').doc(_name.text).set(
+                    {
+                      'list' : [],
+                    });
+
+                setState(() {
+
+                });
+
                 FirebaseFirestore.instance
                     .collection('animal')
                     .add(<String, dynamic>{
@@ -91,6 +101,7 @@ class _AddProfileState extends State<AddProfile> {
                   'name': _name.text,
                   'sex': _sex.text,
                   'weight': int.parse(_weight.text),
+                  'imagelist':<String>[],
                 });
                 _name.clear();
                 _sex.clear();
@@ -297,8 +308,9 @@ class _AddProfileState extends State<AddProfile> {
     });
   }
 
-  Future toggleRecording() =>
-      Speech.toggleRecording(
-        onResult: (text) => setState(() => _name.text = text),
-      );
+
+  Future toggleRecording() => Speech.toggleRecording(
+    onResult: (text) => setState(() => _name.text = text),
+  );
 }
+
