@@ -68,8 +68,7 @@ class _ChatPageState extends State<ChatPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-
-          title: Text(docid)
+          title: Text(petname)
       ),
       backgroundColor: Colors.grey,
       body: Container(
