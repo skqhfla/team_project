@@ -96,6 +96,7 @@ class _AddProfileState extends State<AddProfile> {
                   'name': _name.text,
                   'sex': _sex.text,
                   'weight': int.parse(_weight.text),
+                  'imagelist':[],
                 });
                 _name.clear();
                 _sex.clear();
