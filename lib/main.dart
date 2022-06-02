@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:team_project/provider/dropDownProvider.dart';
 import 'package:team_project/provider/loginProvider.dart';
 import 'package:team_project/provider/profileProvider.dart';
+import 'package:video_player/video_player.dart';
 import 'appstate.dart';
 //import 'chart.dart';
 import 'profiledetail.dart';
@@ -14,6 +15,9 @@ import 'mainpage.dart';
 import 'package:provider/provider.dart';
 //test
 //
+
+VideoPlayerController? controller2;
+
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp();
