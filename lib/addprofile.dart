@@ -83,6 +83,7 @@ class _AddProfileState extends State<AddProfile> {
               onPressed: () async {
                 // if (_formKey.currentState!.validate()) {
                 storage.uploadFile(_image!.path, _name.text + ".png");
+
                 FirebaseFirestore.instance
                     .collection('animal')
                     .add(<String, dynamic>{
