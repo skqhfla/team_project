@@ -4,6 +4,8 @@ import 'package:file_picker/file_picker.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_storage/firebase_storage.dart';
+import 'package:google_maps_flutter/google_maps_flutter.dart';
+//import 'package:google_maps_place_picker/google_maps_place_picker.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:speech_to_text/speech_to_text.dart';
 import 'package:team_project/speech.dart';
@@ -33,7 +35,10 @@ class _AddProfileState extends State<AddProfile> {
   final _sex = TextEditingController();
   final _weight = TextEditingController();
   final _desc = TextEditingController();
-  late String _live;
+  final _live = TextEditingController();
+
+  // late String _live;
+  final String place = 'place';
 
   final ScrollController _scrollController = ScrollController();
 
@@ -78,16 +83,6 @@ class _AddProfileState extends State<AddProfile> {
               onPressed: () async {
                 // if (_formKey.currentState!.validate()) {
                 storage.uploadFile(_image!.path, _name.text + ".png");
-
-                FirebaseFirestore.instance.collection('chat').doc(_name.text).set(
-                    {
-                      'list' : [],
-                    });
-
-                setState(() {
-
-                });
-
                 FirebaseFirestore.instance
                     .collection('animal')
                     .add(<String, dynamic>{
@@ -96,12 +91,11 @@ class _AddProfileState extends State<AddProfile> {
                   'desc': _desc.text,
                   'eat': 0,
                   'image': _name.text + ".png",
-                  'live': _live,
+                  'live': _live.text,
                   'like': 0,
                   'name': _name.text,
                   'sex': _sex.text,
                   'weight': int.parse(_weight.text),
-                  'imagelist':<String>[],
                 });
                 _name.clear();
                 _sex.clear();
@@ -112,10 +106,6 @@ class _AddProfileState extends State<AddProfile> {
                 Navigator.pop(context);
               }),
         ],
-      ),
-      floatingActionButton: FloatingActionButton(
-        child: Icon(Icons.mic_none, size: 30),
-        onPressed: toggleRecording,
       ),
       body: Scrollbar(
         controller: _scrollController,
@@ -129,14 +119,8 @@ class _AddProfileState extends State<AddProfile> {
                 Container(
                   color: const Color(0xffd0cece),
                   margin: EdgeInsets.only(left: 0, right: 0),
-                  width: MediaQuery
-                      .of(context)
-                      .size
-                      .width,
-                  height: MediaQuery
-                      .of(context)
-                      .size
-                      .width,
+                  width: MediaQuery.of(context).size.width,
+                  height: MediaQuery.of(context).size.width,
                   child: Center(
                     child: _image == null
                         ? Text('No image selected.')
@@ -233,12 +217,43 @@ class _AddProfileState extends State<AddProfile> {
             SizedBox(
               height: 16,
             ),
-            Row(
-                children: [
-                  TextButton(
-                    onPressed: () {}, child: Text("af"),
-                  ),
-                  ]
+            // Row(
+            //   children: [
+            //     TextButton(
+            //       onPressed: () {
+            //         Navigator.push(
+            //           context,
+            //           MaterialPageRoute(
+            //             builder: (context) {
+            //               return PlacePicker(
+            //                 apiKey: 'AIzaSyDlI2BGIV4xn0H11J32EGLDVTMcE98Nbw8',
+            //                 initialPosition:
+            //                     LatLng(currentLatitude, currentLongitude),
+            //                 useCurrentLocation: true,
+            //                 selectInitialPosition: true,
+            //
+            //                 //usePlaceDetailSearch: true,
+            //                 onPlacePicked: (result) {
+            //                   place = result;
+            //                   Navigator.of(context).pop();
+            //                   setState(() {});
+            //                 },
+            //               );
+            //             },
+            //           ),
+            //         );
+            //       },
+            //       child: Text("live"),
+            //     ),
+            //     Text(place),
+            //   ],
+            // ),
+            TextFormField(
+              controller: _live,
+              decoration: const InputDecoration(
+                filled: false,
+                labelText: "사는 곳을 입력하세요",
+              ),
             ),
             SizedBox(
               height: 16,
@@ -307,10 +322,4 @@ class _AddProfileState extends State<AddProfile> {
       }
     });
   }
-
-
-  Future toggleRecording() => Speech.toggleRecording(
-    onResult: (text) => setState(() => _name.text = text),
-  );
 }
-

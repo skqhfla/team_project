@@ -48,6 +48,7 @@ dependencies:
   speech_to_text: ^5.5.0
   #google_maps_place_picker: ^2.1.0-nullsafety.3
 
+
   geolocator:
   location:
   flutter_chat_ui:
