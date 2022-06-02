@@ -83,6 +83,12 @@ class _AddProfileState extends State<AddProfile> {
               onPressed: () async {
                 // if (_formKey.currentState!.validate()) {
                 storage.uploadFile(_image!.path, _name.text + ".png");
+
+                FirebaseFirestore.instance.collection('chat').doc(_name.text).set(
+                    {
+                      'list' : [],
+                    });
+
                 FirebaseFirestore.instance
                     .collection('animal')
                     .add(<String, dynamic>{
@@ -92,7 +98,7 @@ class _AddProfileState extends State<AddProfile> {
                   'eat': 0,
                   'image': _name.text + ".png",
                   'live': _live.text,
-                  'like': 0,
+                  'like': false,
                   'name': _name.text,
                   'sex': _sex.text,
                   'weight': int.parse(_weight.text),
