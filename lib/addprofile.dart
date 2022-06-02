@@ -84,6 +84,11 @@ class _AddProfileState extends State<AddProfile> {
                 // if (_formKey.currentState!.validate()) {
                 storage.uploadFile(_image!.path, _name.text + ".png");
 
+                FirebaseFirestore.instance.collection('chat').doc(_name.text).set(
+                    {
+                      'list' : [],
+                    });
+
                 FirebaseFirestore.instance
                     .collection('animal')
                     .add(<String, dynamic>{
