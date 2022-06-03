@@ -2,10 +2,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:team_project/homepage.dart';
 import 'package:team_project/signup.dart';
-
-import 'mainpage.dart';
-
-
+import 'package:geolocator/geolocator.dart';
 
 class LoginPage extends StatefulWidget {
   const LoginPage({Key? key}) : super(key: key);
@@ -81,10 +78,11 @@ class _LoginPageState extends State<LoginPage> {
                             email: _id.text,
                             password: _password.text,
                           );
-                          User user = FirebaseAuth.instance.currentUser!;
+                          LocationPermission permission = await Geolocator.requestPermission();
+                          Position position = await Geolocator.getCurrentPosition();
                           Navigator.push(context, new MaterialPageRoute(
                               builder: (context) =>
-                              new HomePage())
+                              new HomePage(mycurrentLatitude: position.latitude, mycurrentLongitude: position.longitude,))
                           );
                         } on FirebaseAuthException catch (e) {
                           showDialog(

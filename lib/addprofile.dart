@@ -4,7 +4,11 @@ import 'package:file_picker/file_picker.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_storage/firebase_storage.dart';
+import 'package:google_maps_flutter/google_maps_flutter.dart';
+//import 'package:google_maps_place_picker/google_maps_place_picker.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:speech_to_text/speech_to_text.dart';
+import 'package:team_project/speech.dart';
 import 'package:tflite/tflite.dart';
 import 'animal_detect.dart';
 import 'Storage.dart';
@@ -25,12 +29,17 @@ class _AddProfileState extends State<AddProfile> {
   final isSelected = <bool>[false, true];
 
   final Storage storage = Storage();
+  static final _speech = SpeechToText();
   final _name = TextEditingController();
   final _age = TextEditingController();
   final _sex = TextEditingController();
   final _weight = TextEditingController();
   final _desc = TextEditingController();
   final _live = TextEditingController();
+
+  // late String _live;
+  final String place = 'place';
+
   final ScrollController _scrollController = ScrollController();
 
   final _formKey = GlobalKey<FormState>(debugLabel: '_AddProfileState');
@@ -72,9 +81,14 @@ class _AddProfileState extends State<AddProfile> {
                 ),
               ),
               onPressed: () async {
-                storage.uploadFile(_image!.path, _name.text);
                 // if (_formKey.currentState!.validate()) {
                 storage.uploadFile(_image!.path, _name.text + ".png");
+
+                FirebaseFirestore.instance.collection('chat').doc(_name.text).set(
+                    {
+                      'list' : [],
+                    });
+
                 FirebaseFirestore.instance
                     .collection('animal')
                     .add(<String, dynamic>{
@@ -88,6 +102,7 @@ class _AddProfileState extends State<AddProfile> {
                   'name': _name.text,
                   'sex': _sex.text,
                   'weight': int.parse(_weight.text),
+                  'imagelist':[],
                 });
                 _name.clear();
                 _sex.clear();
@@ -119,17 +134,34 @@ class _AddProfileState extends State<AddProfile> {
                         : Image.file(File(_image!.path)),
                   ),
                 ),
-                Padding(
-                  padding: const EdgeInsets.fromLTRB(0, 10, 10, 0),
-                  child: Align(
-                    alignment: Alignment.centerRight,
-                    child: IconButton(
-                      icon: const Icon(Icons.camera_alt),
-                      onPressed: () async {
-                        await getImage(ImageSource.gallery);
-                      },
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.end,
+                  children: [
+                    Padding(
+                      padding: const EdgeInsets.fromLTRB(0, 10, 10, 0),
+                      child: Align(
+                        alignment: Alignment.centerRight,
+                        child: IconButton(
+                          icon: const Icon(Icons.add_a_photo),
+                          onPressed: () async {
+                            await getImage(ImageSource.camera);
+                          },
+                        ),
+                      ),
                     ),
-                  ),
+                    Padding(
+                      padding: const EdgeInsets.fromLTRB(0, 10, 10, 0),
+                      child: Align(
+                        alignment: Alignment.centerRight,
+                        child: IconButton(
+                          icon: const Icon(Icons.collections_rounded),
+                          onPressed: () async {
+                            await getImage(ImageSource.gallery);
+                          },
+                        ),
+                      ),
+                    ),
+                  ],
                 ),
                 ToggleButtons(
                   children: [
@@ -145,20 +177,20 @@ class _AddProfileState extends State<AddProfile> {
                   isSelected: isSelected,
                   onPressed: (index) {
                     // Respond to button selection
-                    setState(() {
-                      isSelected[index] = !isSelected[index];
-                      if(index == 0){
-                        isSelected[1] = !isSelected[1];
-                      }else{
-                        isSelected[0] = !isSelected[0];
-                      }
-                    },
+                    setState(
+                          () {
+                        isSelected[index] = !isSelected[index];
+                        if (index == 0) {
+                          isSelected[1] = !isSelected[1];
+                        } else {
+                          isSelected[0] = !isSelected[0];
+                        }
+                      },
                     );
                   },
                 ),
               ],
             ),
-
             SizedBox(
               height: 50,
             ),
@@ -192,6 +224,37 @@ class _AddProfileState extends State<AddProfile> {
             SizedBox(
               height: 16,
             ),
+            // Row(
+            //   children: [
+            //     TextButton(
+            //       onPressed: () {
+            //         Navigator.push(
+            //           context,
+            //           MaterialPageRoute(
+            //             builder: (context) {
+            //               return PlacePicker(
+            //                 apiKey: 'AIzaSyDlI2BGIV4xn0H11J32EGLDVTMcE98Nbw8',
+            //                 initialPosition:
+            //                     LatLng(currentLatitude, currentLongitude),
+            //                 useCurrentLocation: true,
+            //                 selectInitialPosition: true,
+            //
+            //                 //usePlaceDetailSearch: true,
+            //                 onPlacePicked: (result) {
+            //                   place = result;
+            //                   Navigator.of(context).pop();
+            //                   setState(() {});
+            //                 },
+            //               );
+            //             },
+            //           ),
+            //         );
+            //       },
+            //       child: Text("live"),
+            //     ),
+            //     Text(place),
+            //   ],
+            // ),
             TextFormField(
               controller: _live,
               decoration: const InputDecoration(
@@ -256,16 +319,14 @@ class _AddProfileState extends State<AddProfile> {
     setState(() {
       _outputs = output;
       print(_outputs![0]['label'].toString().toUpperCase());
-      if(_outputs![0]['label'].toString().toUpperCase() == "CAT"){
+      if (_outputs![0]['label'].toString().toUpperCase() == "CAT") {
         isSelected[0] = false;
         isSelected[1] = true;
-      }
-      else{
+      } else {
         print(_outputs![0]['label'].toString().toUpperCase());
         isSelected[0] = true;
         isSelected[1] = false;
       }
     });
   }
-
 }
